@@ -36,17 +36,29 @@ tweet_cv = joblib.load(news_vectorizer) # loading your vectorizer from the pkl f
 raw = pd.read_csv("resources/train.csv")
 
 # The main function where we will build the actual app
+
 def main():
 	"""Tweet Classifier App with Streamlit """
 
 	# Creates a main title and subheader on your page -
 	# these are static across all pages
-	st.title("Tweet Classifer")
+	st.title("Welcome to Born PHI Tweet Classifer")
 	st.subheader("Climate change tweet classification")
+	st.bar_chart({"accuracy": [1, 5, 2, 6, 2, 1]})
+
+	with st.expander("See explanation"):
+		st.write("""
+			The chart above shows some numbers I picked for you.
+			I rolled actual dice for these, so they're *guaranteed* to
+			be random.
+		""")
+		st.image("https://static.streamlit.io/examples/dice.jpg")
 
 	# Creating sidebar with selection box -
 	# you can create multiple pages this way
 	options = ["Prediction", "Information"]
+	models= ['Logistic Regression', 'Random Forest', 'Support Vector', 'Ada Boost',
+			 'K-Neighbors', 'Decision Tree' ]
 	selection = st.sidebar.selectbox("Choose Option", options)
 
 	# Building out the "Information" page
@@ -61,23 +73,83 @@ def main():
 
 	# Building out the predication page
 	if selection == "Prediction":
-		st.info("Prediction with ML Models")
+		
 		# Creating a text box for user input
-		tweet_text = st.text_area("Enter Text","Type Here")
+		tweet_text = st.text_area("Enter text you would like to classify",key = 1)
+		
+		model_choice= st.selectbox("Choose a model", models)
 
-		if st.button("Classify"):
-			# Transforming user input with vectorizer
-			vect_text = tweet_cv.transform([tweet_text]).toarray()
-			# Load your .pkl file with the model of your choice + make predictions
-			# Try loading in multiple models to give the user a choice
-			predictor = joblib.load(open(os.path.join("resources/lr_regression_base_main.pkl"),"rb"))
-			predictor = joblib.load(open(os.path.join("resources/rf_classifier_base.pkl"),"rb"))
-			prediction = predictor.predict(vect_text)
+		if model_choice == 'Logistic Regression':
 
-			# When model has successfully run, will print prediction
-			# You can use a dictionary or similar structure to make this output
-			# more human interpretable.
-			st.success("Text Categorized as: {}".format(prediction))
+			if st.button("Classify"):
+				# Transforming user input with vectorizer
+				vect_text = tweet_cv.transform([tweet_text]).toarray()
+				# Load your .pkl file with the model of your choice + make predictions
+				# Try loading in multiple models to give the user a choice
+				predictor = joblib.load(open(os.path.join("resources/lr_regression_base_main.pkl"),"rb"))
+			
+				prediction = predictor.predict(vect_text)
+
+				# When model has successfully run, will print prediction
+				# You can use a dictionary or similar structure to make this output
+				# more human interpretable.
+				st.metric(label="Accuracy", value="76 %")
+				st.caption("Prediction with Logistic Regression")
+				st.success("Text Categorized as: {}".format(prediction))
+				
+		if model_choice == 'Random Forest':
+			# Creating a text box for user input
+			if st.button("Classify"):
+				# Transforming user input with vectorizer
+				vect_text = tweet_cv.transform([tweet_text]).toarray()
+		
+				predictor = joblib.load(open(os.path.join("resources/rf_classifier_base.pkl"),"rb"))
+				prediction = predictor.predict(vect_text)
+				st.caption('Prediction with Random Forest.')
+				st.success("Text Categorized as: {}".format(prediction))
+				st.metric(label="Accuracy", value="55 %")
+
+		if model_choice == 'Support Vector':
+	
+			if st.button("Classify"):
+				# Transforming user input with vectorizer
+				vect_text = tweet_cv.transform([tweet_text]).toarray()
+				predictor = joblib.load(open(os.path.join("resources/rf_classifier_base.pkl"),"rb"))
+				prediction = predictor.predict(vect_text)
+				st.caption('Prediction with Support Vector.')
+				st.success("Text Categorized as: {}".format(prediction))
+
+		if model_choice == 'Ada Boost':
+
+			if st.button("Classify"):
+				# Transforming user input with vectorizer
+				vect_text = tweet_cv.transform([tweet_text]).toarray()
+				predictor = joblib.load(open(os.path.join("resources/rf_classifier_base.pkl"),"rb"))
+				prediction = predictor.predict(vect_text)
+				st.caption('Prediction with Ada Boost.')
+				st.success("Text Categorized as: {}".format(prediction))
+		
+		if model_choice == 'K-Neighbors':
+	
+			if st.button("Classify"):
+				# Transforming user input with vectorizer
+				vect_text = tweet_cv.transform([tweet_text]).toarray()
+				predictor = joblib.load(open(os.path.join("resources/rf_classifier_base.pkl"),"rb"))
+				prediction = predictor.predict(vect_text)
+				st.caption('Prediction with K-Neighbors.')
+				st.success("Text Categorized as: {}".format(prediction))
+
+		if model_choice == 'Decision Tree':
+			
+			if st.button("Classify"):
+				# Transforming user input with vectorizer
+				vect_text = tweet_cv.transform([tweet_text]).toarray()
+				predictor = joblib.load(open(os.path.join("resources/rf_classifier_base.pkl"),"rb"))
+				prediction = predictor.predict(vect_text)
+				st.caption('Prediction with Decision Tree.')
+				st.success("Text Categorized as: {}".format(prediction))
+		
+
 
 # Required to let Streamlit instantiate our web app.  
 if __name__ == '__main__':

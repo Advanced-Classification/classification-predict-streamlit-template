@@ -114,7 +114,7 @@ def main():
 			if st.button("Classify"):
 				# Transforming user input with vectorizer
 				vect_text = tweet_cv.transform([tweet_text]).toarray()
-				predictor = joblib.load(open(os.path.join("resources/rf_classifier_base.pkl"),"rb"))
+				predictor = joblib.load(open(os.path.join("resources/Support_Vector.pkl"),"rb"))
 				prediction = predictor.predict(vect_text)
 				st.caption('Prediction with Support Vector.')
 				st.success("Text Categorized as: {}".format(prediction))
@@ -124,7 +124,7 @@ def main():
 			if st.button("Classify"):
 				# Transforming user input with vectorizer
 				vect_text = tweet_cv.transform([tweet_text]).toarray()
-				predictor = joblib.load(open(os.path.join("resources/rf_classifier_base.pkl"),"rb"))
+				predictor = joblib.load(open(os.path.join("resources/AdaBoost.pkl"),"rb"))
 				prediction = predictor.predict(vect_text)
 				st.caption('Prediction with Ada Boost.')
 				st.success("Text Categorized as: {}".format(prediction))
@@ -134,7 +134,7 @@ def main():
 			if st.button("Classify"):
 				# Transforming user input with vectorizer
 				vect_text = tweet_cv.transform([tweet_text]).toarray()
-				predictor = joblib.load(open(os.path.join("resources/rf_classifier_base.pkl"),"rb"))
+				predictor = joblib.load(open(os.path.join("resources/K-Neighbors.pkl"),"rb"))
 				prediction = predictor.predict(vect_text)
 				st.caption('Prediction with K-Neighbors.')
 				st.success("Text Categorized as: {}".format(prediction))
@@ -144,7 +144,7 @@ def main():
 			if st.button("Classify"):
 				# Transforming user input with vectorizer
 				vect_text = tweet_cv.transform([tweet_text]).toarray()
-				predictor = joblib.load(open(os.path.join("resources/rf_classifier_base.pkl"),"rb"))
+				predictor = joblib.load(open(os.path.join("resources/Decision_Tree.pkl"),"rb"))
 				prediction = predictor.predict(vect_text)
 				st.caption('Prediction with Decision Tree.')
 				st.success("Text Categorized as: {}".format(prediction))

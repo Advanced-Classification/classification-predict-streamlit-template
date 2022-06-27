@@ -24,6 +24,8 @@
 # Streamlit dependencies
 import streamlit as st
 import joblib,os
+import streamlit as st
+from PIL import Image
 
 # Data dependencies
 import pandas as pd
@@ -44,6 +46,7 @@ def main():
 	# these are static across all pages
 	st.title("Welcome to Born PHI Tweet Classifer")
 	st.subheader("Climate change tweet classification")
+<<<<<<< Updated upstream
 	st.bar_chart({"accuracy": [1, 5, 2, 6, 2, 1]})
 
 	with st.expander("See explanation"):
@@ -54,6 +57,10 @@ def main():
 		""")
 		st.image("https://static.streamlit.io/examples/dice.jpg")
 
+=======
+	img = Image.open("st.png")
+	st.img('TweetDeck')
+>>>>>>> Stashed changes
 	# Creating sidebar with selection box -
 	# you can create multiple pages this way
 	options = ["Prediction", "Information"]

@@ -22,12 +22,20 @@
 
 """
 # Streamlit dependencies
+from ctypes import alignment
+
+from scipy.misc import central_diff_weights
 import streamlit as st
+import numpy as np
+import altair as alt
+import time
+import hydralit_components as hc
+import matplotlib.pyplot as plt
 import joblib,os
 
 # Data dependencies
 import pandas as pd
-
+from PIL import Image
 # Vectorizer
 news_vectorizer = open("resources/Vectorizer2.pkl","rb")
 tweet_cv = joblib.load(news_vectorizer) # loading your vectorizer from the pkl file
@@ -38,50 +46,45 @@ raw = pd.read_csv("resources/train.csv")
 # The main function where we will build the actual app
 
 def main():
-	"""Tweet Classifier App with Streamlit """
+	with hc.HyLoader('Loading..',hc.Loaders.pulse_bars,):
+		time.sleep(4)
 
-	# Creates a main title and subheader on your page -
-	# these are static across all pages
-	st.title("Welcome to Born PHI Tweet Classifer")
-	st.subheader("Climate change tweet classification")
-	st.bar_chart({"accuracy": [1, 5, 2, 6, 2, 1]})
-
-	with st.expander("See explanation"):
-		st.write("""
-			The chart above shows some numbers I picked for you.
-			I rolled actual dice for these, so they're *guaranteed* to
-			be random.
-		""")
-		st.image("https://static.streamlit.io/examples/dice.jpg")
-
-	# Creating sidebar with selection box -
-	# you can create multiple pages this way
-	options = ["Prediction", "Information"]
 	models= ['Logistic Regression', 'Random Forest', 'Support Vector', 'Ada Boost',
 			 'K-Neighbors', 'Decision Tree' ]
-	selection = st.sidebar.selectbox("Choose Option", options)
+	results= {'-1': 'Anti' , '0 ': 'Neutral', '1': 'Pro' , '2' : 'News'	}	 
+	menu_data = [
+        {'id':'predict','icon':"🐙",'label':"Predict"},
+		{'id':'rawData', 'icon': "far fa-clone", 'label':"Raw Data"},
+        {'id':'visualize', 'icon': "far fa-chart-bar", 'label':"Visualize"},#no tooltip message
+		# {'icon': "far fa-copy", 'label':"Left End"},
+        # {'icon': "far fa-address-book", 'label':"Book"},
+        # {'id':' Crazy return value 💀','icon': "💀", 'label':"Calendar"},
+    
+        # {'icon': "fas fa-tachometer-alt", 'label':"Dashboard",'ttip':"I'm the Dashboard tooltip!"}, #can add a tooltip message
+        # {'icon': "far fa-copy", 'label':"Right End"},
+]
+	over_theme = {'txc_inactive': '#FFFFFF'}
+	menu_id = hc.nav_bar(menu_definition=menu_data,home_name='Home',override_theme=over_theme)
 
-	# Building out the "Information" page
-	if selection == "Information":
-		st.info("General Information")
-		# You can read a markdown file from supporting resources folder
-		st.markdown("Some information here")
 
-		st.subheader("Raw Twitter data and label")
-		if st.checkbox('Show raw data'): # data is hidden if box is unchecked
-			st.write(raw[['sentiment', 'message']]) # will write the df to the page
-
-	# Building out the predication page
-	if selection == "Prediction":
+	if menu_id == 'predict':
 		
-		# Creating a text box for user input
+			# Creating a text box for user input
 		tweet_text = st.text_area("Enter text you would like to classify",key = 1)
 		
 		model_choice= st.selectbox("Choose a model", models)
 
 		if model_choice == 'Logistic Regression':
-
+			m = st.markdown("""
+<style>
+div.stButton > button:first-child {
+    background-color: rgb(255, 49, 49);
+}
+</style>""", unsafe_allow_html=True)
+		
 			if st.button("Classify"):
+				with hc.HyLoader('Classifying with Logistic Regression',hc.Loaders.standard_loaders,index=[2,2,2,2]):
+					time.sleep(3)
 				# Transforming user input with vectorizer
 				vect_text = tweet_cv.transform([tweet_text]).toarray()
 				# Load your .pkl file with the model of your choice + make predictions
@@ -93,63 +96,90 @@ def main():
 				# When model has successfully run, will print prediction
 				# You can use a dictionary or similar structure to make this output
 				# more human interpretable.
-				st.metric(label="Accuracy", value="76 %")
-				st.caption("Prediction with Logistic Regression")
-				st.success("Text Categorized as: {}".format(prediction))
+				st.metric("Text Categorized as: " , prediction)
+			
 				
 		if model_choice == 'Random Forest':
 			# Creating a text box for user input
 			if st.button("Classify"):
+				with hc.HyLoader('Classifying  with Random Forest..', hc.Loaders.standard_loaders,index=[2,2,2,2]):
+					time.sleep(3)
 				# Transforming user input with vectorizer
 				vect_text = tweet_cv.transform([tweet_text]).toarray()
 		
 				predictor = joblib.load(open(os.path.join("resources/rf_classifier_base.pkl"),"rb"))
 				prediction = predictor.predict(vect_text)
-				st.caption('Prediction with Random Forest.')
-				st.success("Text Categorized as: {}".format(prediction))
-				st.metric(label="Accuracy", value="55 %")
+				st.metric("Text Categorized as: " , prediction)
 
 		if model_choice == 'Support Vector':
 	
 			if st.button("Classify"):
+				with hc.HyLoader('Classifying with Support Vector',hc.Loaders.standard_loaders,index=[2,2,2,2]):
+					time.sleep(3)
 				# Transforming user input with vectorizer
 				vect_text = tweet_cv.transform([tweet_text]).toarray()
 				predictor = joblib.load(open(os.path.join("resources/Support_Vector.pkl"),"rb"))
 				prediction = predictor.predict(vect_text)
-				st.caption('Prediction with Support Vector.')
-				st.success("Text Categorized as: {}".format(prediction))
+				st.metric("Text Categorized as: " , prediction)
 
 		if model_choice == 'Ada Boost':
 
 			if st.button("Classify"):
+				with hc.HyLoader('Classifying with Ada Boost..',hc.Loaders.standard_loaders,index=[2,2,2,2]):
+					time.sleep(3)
 				# Transforming user input with vectorizer
 				vect_text = tweet_cv.transform([tweet_text]).toarray()
 				predictor = joblib.load(open(os.path.join("resources/AdaBoost.pkl"),"rb"))
 				prediction = predictor.predict(vect_text)
-				st.caption('Prediction with Ada Boost.')
-				st.success("Text Categorized as: {}".format(prediction))
+				st.metric("Text Categorized as: " , prediction)
 		
 		if model_choice == 'K-Neighbors':
 	
 			if st.button("Classify"):
+				with hc.HyLoader('Classifying with K-Neighbors..',hc.Loaders.standard_loaders,index=[2,2,2,2]):
+					time.sleep(3)
 				# Transforming user input with vectorizer
 				vect_text = tweet_cv.transform([tweet_text]).toarray()
 				predictor = joblib.load(open(os.path.join("resources/K-Neighbors.pkl"),"rb"))
 				prediction = predictor.predict(vect_text)
-				st.caption('Prediction with K-Neighbors.')
-				st.success("Text Categorized as: {}".format(prediction))
+				st.metric("Text Categorized as: " , prediction)
 
 		if model_choice == 'Decision Tree':
 			
 			if st.button("Classify"):
+				with hc.HyLoader('Classifying with Decision Tree..',hc.Loaders.standard_loaders,index=[2,2,2,2]):
+					time.sleep(3)
 				# Transforming user input with vectorizer
 				vect_text = tweet_cv.transform([tweet_text]).toarray()
 				predictor = joblib.load(open(os.path.join("resources/Decision_Tree.pkl"),"rb"))
 				prediction = predictor.predict(vect_text)
-				st.caption('Prediction with Decision Tree.')
-				st.success("Text Categorized as: {}".format(prediction))
+				st.metric("Text Categorized as: " , prediction)
 		
 
+	if menu_id == 'rawData':
+		st.write(raw[['sentiment', 'message']])
+	if menu_id == 'visualize':
+		labels = 'Anti', 'Neutral', 'Pro', 'News'
+		sizes = [12, 25, 85, 35]
+		explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
+
+		fig1, ax1 = plt.subplots()
+		ax1.pie(sizes, explode=explode, labels=labels, autopct='%0.1f%%',
+				shadow=True, startangle=90)
+		ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+
+		st.pyplot(fig1)
+		with st.expander("See explanation"):
+			st.write("""
+				The pie chart above shows of percentages neutral , pro , anti and 
+				news observations in our dataset.
+			""")
+	if menu_id == 'Home':
+		st.markdown("<h2 style='text-align: center;'>Climate Change Tweet Classifier</h2>", unsafe_allow_html=True)
+		st.image("resources/imgs/Advanced Classification 2022 EDSA.jpg" ,  width = 650 )
+
+	
+		
 
 # Required to let Streamlit instantiate our web app.  
 if __name__ == '__main__':

@@ -48,16 +48,17 @@ raw = pd.read_csv("resources/train.csv")
 def main():
 	with hc.HyLoader('Loading..',hc.Loaders.pulse_bars,):
 		time.sleep(4)
-
+	prediction =[]
 	models= ['Logistic Regression', 'Random Forest', 'Support Vector', 'Ada Boost',
 			 'K-Neighbors', 'Decision Tree' ]
-	results= {'-1': 'Anti' , '0 ': 'Neutral', '1': 'Pro' , '2' : 'News'	}	 
+	results= {'-1': 'Anti' , '0': 'Neutral', '1': 'Pro' , '2' : 'News'}	 
 	menu_data = [
         {'id':'predict','icon':"🐙",'label':"Predict"},
 		{'id':'rawData', 'icon': "far fa-clone", 'label':"Raw Data"},
         {'id':'visualize', 'icon': "far fa-chart-bar", 'label':"Visualize"},#no tooltip message
-		# {'icon': "far fa-copy", 'label':"Left End"},
-        # {'icon': "far fa-address-book", 'label':"Book"},
+		{'id': 'info' , 'icon': "far fa-copy", 'label':"Info"},
+		{'id': 'aboutUs',  'icon': "far fa-address-book ", 'label':"About Us"},
+       
         # {'id':' Crazy return value 💀','icon': "💀", 'label':"Calendar"},
     
         # {'icon': "fas fa-tachometer-alt", 'label':"Dashboard",'ttip':"I'm the Dashboard tooltip!"}, #can add a tooltip message
@@ -70,39 +71,58 @@ def main():
 	if menu_id == 'predict':
 		
 			# Creating a text box for user input
-		tweet_text = st.text_area("Enter text you would like to classify",key = 1)
-		
-		model_choice= st.selectbox("Choose a model", models)
-
-		if model_choice == 'Logistic Regression':
-			m = st.markdown("""
+		st.image("resources/imgs/tweet1.jpg", width =400)
+		m = st.markdown("""
 <style>
 div.stButton > button:first-child {
     background-color: rgb(255, 49, 49);
 }
 </style>""", unsafe_allow_html=True)
+
+		s = st.markdown("""
+<style>
+div.stText_Area > button:first-child {
+    background-color: rgb(255, 49, 49);
+}
+</style>""", unsafe_allow_html=True)
+				
+				
+		tweet_text = st.text_area("Enter text you would like to classify",key = 1)
+		
+		model_choice= st.selectbox("Choose a model", models)
+
+		if model_choice == 'Logistic Regression':
+# 			m = st.markdown("""
+# # <style>
+# # div.stButton > button:first-child {
+# #     background-color: rgb(255, 49, 49);
+# # }
+# # </style>""", unsafe_allow_html=True)
 		
 			if st.button("Classify"):
-				with hc.HyLoader('Classifying with Logistic Regression',hc.Loaders.standard_loaders,index=[2,2,2,2]):
+				with hc.HyLoader('Classifying with Logistic Regression',hc.Loaders.standard_loaders,index=[2,2]):
 					time.sleep(3)
 				# Transforming user input with vectorizer
-				vect_text = tweet_cv.transform([tweet_text]).toarray()
+					vect_text = tweet_cv.transform([tweet_text]).toarray()
 				# Load your .pkl file with the model of your choice + make predictions
 				# Try loading in multiple models to give the user a choice
-				predictor = joblib.load(open(os.path.join("resources/lr_regression_base_main.pkl"),"rb"))
+					predictor = joblib.load(open(os.path.join("resources/lr_regression_base_main.pkl"),"rb"))
 			
-				prediction = predictor.predict(vect_text)
+					prediction = predictor.predict(vect_text)
 
 				# When model has successfully run, will print prediction
 				# You can use a dictionary or similar structure to make this output
 				# more human interpretable.
-				st.metric("Text Categorized as: " , prediction)
-			
+		
+					st.metric("Text Categorized as: " , prediction)
+					
+		
+
 				
 		if model_choice == 'Random Forest':
 			# Creating a text box for user input
 			if st.button("Classify"):
-				with hc.HyLoader('Classifying  with Random Forest..', hc.Loaders.standard_loaders,index=[2,2,2,2]):
+				with hc.HyLoader('Classifying  with Random Forest..', hc.Loaders.standard_loaders,index=[2,2]):
 					time.sleep(3)
 				# Transforming user input with vectorizer
 				vect_text = tweet_cv.transform([tweet_text]).toarray()
@@ -114,7 +134,7 @@ div.stButton > button:first-child {
 		if model_choice == 'Support Vector':
 	
 			if st.button("Classify"):
-				with hc.HyLoader('Classifying with Support Vector',hc.Loaders.standard_loaders,index=[2,2,2,2]):
+				with hc.HyLoader('Classifying with Support Vector',hc.Loaders.standard_loaders,index=[2,2]):
 					time.sleep(3)
 				# Transforming user input with vectorizer
 				vect_text = tweet_cv.transform([tweet_text]).toarray()
@@ -125,7 +145,7 @@ div.stButton > button:first-child {
 		if model_choice == 'Ada Boost':
 
 			if st.button("Classify"):
-				with hc.HyLoader('Classifying with Ada Boost..',hc.Loaders.standard_loaders,index=[2,2,2,2]):
+				with hc.HyLoader('Classifying with Ada Boost..',hc.Loaders.standard_loaders,index=[2,2]):
 					time.sleep(3)
 				# Transforming user input with vectorizer
 				vect_text = tweet_cv.transform([tweet_text]).toarray()
@@ -136,7 +156,7 @@ div.stButton > button:first-child {
 		if model_choice == 'K-Neighbors':
 	
 			if st.button("Classify"):
-				with hc.HyLoader('Classifying with K-Neighbors..',hc.Loaders.standard_loaders,index=[2,2,2,2]):
+				with hc.HyLoader('Classifying with K-Neighbors..',hc.Loaders.standard_loaders,index=[2,2]):
 					time.sleep(3)
 				# Transforming user input with vectorizer
 				vect_text = tweet_cv.transform([tweet_text]).toarray()
@@ -147,16 +167,19 @@ div.stButton > button:first-child {
 		if model_choice == 'Decision Tree':
 			
 			if st.button("Classify"):
-				with hc.HyLoader('Classifying with Decision Tree..',hc.Loaders.standard_loaders,index=[2,2,2,2]):
+				with hc.HyLoader('Classifying with Decision Tree..',hc.Loaders.standard_loaders,index=[2,2]):
 					time.sleep(3)
 				# Transforming user input with vectorizer
 				vect_text = tweet_cv.transform([tweet_text]).toarray()
 				predictor = joblib.load(open(os.path.join("resources/Decision_Tree.pkl"),"rb"))
 				prediction = predictor.predict(vect_text)
+			with st.container():
 				st.metric("Text Categorized as: " , prediction)
 		
 
 	if menu_id == 'rawData':
+		st.markdown("<h2 style='text-align: center;'>Tweets Dataframe</h2>",
+			unsafe_allow_html=True)
 		st.write(raw[['sentiment', 'message']])
 	if menu_id == 'visualize':
 		labels = 'Anti', 'Neutral', 'Pro', 'News'
@@ -171,14 +194,38 @@ div.stButton > button:first-child {
 		st.pyplot(fig1)
 		with st.expander("See explanation"):
 			st.write("""
-				The pie chart above shows of percentages neutral , pro , anti and 
-				news observations in our dataset.
+				This pie chart shows the distribution of all the sentiments towards 
+				climate change being man made or not.
 			""")
 	if menu_id == 'Home':
-		st.markdown("<h2 style='text-align: center;'>Climate Change Tweet Classifier</h2>", unsafe_allow_html=True)
+		st.markdown("<h2 style='text-align: center;'>Climate Change Tweet Classifier</h2>",
+		 unsafe_allow_html=True)
 		st.image("resources/imgs/Advanced Classification 2022 EDSA.jpg" ,  width = 650 )
+	if menu_id == 'aboutUs':
+		st.image("resources/imgs/team.jpg")
+		st.markdown("<h2 style='text-align: center;'>Who are we?</h2>",
+			unsafe_allow_html=True)
+		st.write("We are a group of Data Scientists "
+		+"who are committed to bringing change to the world through Data Analytics. "
+		+"The team is comprised of")
+		st.write("- Siyanda Madlopha")
+		st.write("- Theo Sdinani")
+		st.write("- Angela Morris")
+		st.write("- Marcus Mohlake")
+		st.write("- Morglin Olivier")
+		st.write("Website: [Data Science Magicians](https://github.com/Advanced-Classification)")
+		st.markdown("<h2 style='text-align: center;'>Contact Us</h2>",
+		 unsafe_allow_html=True)
+		st.write("Email : data.analytics@magicians.co.za")
+		st.write("Telephone : 011 345 7787")
+	if menu_id=='info':
+		st.markdown("<h2 style='text-align: center;'>Sentiment catagories explained.</h2>",
+			unsafe_allow_html=True)
+		st.write('- `1 Pro:` the tweet supports the belief of man-made climate change')
+		st.write('- `2 News:` the tweet links to factual news about climate change')
+		st.write('- `0 Neutral:` the tweet neither supports nor refutes the belief of man-made climate change')
+		st.write('- `-1 Anti:` the tweet does not believe in man-made climate change')
 
-	
 		
 
 # Required to let Streamlit instantiate our web app.  

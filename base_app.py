@@ -50,7 +50,7 @@ def main():
 		time.sleep(4)
 	prediction =[]
 	models= ['Logistic Regression', 'Random Forest', 'Support Vector', 'Ada Boost',
-			 'K-Neighbors', 'Decision Tree' ]
+			 'K-Neighbors']
 	results= {'-1': 'Anti' , '0': 'Neutral', '1': 'Pro' , '2' : 'News'}	 
 	menu_data = [
         {'id':'predict','icon':"🐙",'label':"Predict"},
@@ -92,13 +92,6 @@ div.stText_Area > button:first-child {
 		model_choice= st.selectbox("Choose a model", models)
 
 		if model_choice == 'Logistic Regression':
-# 			m = st.markdown("""
-# # <style>
-# # div.stButton > button:first-child {
-# #     background-color: rgb(255, 49, 49);
-# # }
-# # </style>""", unsafe_allow_html=True)
-		
 			if st.button("Classify"):
 				with hc.HyLoader('Classifying with Logistic Regression',hc.Loaders.standard_loaders,index=[2,2]):
 					time.sleep(3)
@@ -116,9 +109,6 @@ div.stText_Area > button:first-child {
 		
 					st.metric("Text Categorized as: " , prediction)
 					
-		
-
-				
 		if model_choice == 'Random Forest':
 			# Creating a text box for user input
 			if st.button("Classify"):
@@ -164,18 +154,6 @@ div.stText_Area > button:first-child {
 				prediction = predictor.predict(vect_text)
 				st.metric("Text Categorized as: " , prediction)
 
-		if model_choice == 'Decision Tree':
-			
-			if st.button("Classify"):
-				with hc.HyLoader('Classifying with Decision Tree..',hc.Loaders.standard_loaders,index=[2,2]):
-					time.sleep(3)
-				# Transforming user input with vectorizer
-				vect_text = tweet_cv.transform([tweet_text]).toarray()
-				predictor = joblib.load(open(os.path.join("resources/Decision_Tree.pkl"),"rb"))
-				prediction = predictor.predict(vect_text)
-			with st.container():
-				st.metric("Text Categorized as: " , prediction)
-		
 
 	if menu_id == 'rawData':
 		st.markdown("<h2 style='text-align: center;'>Tweets Dataframe</h2>",
@@ -197,10 +175,10 @@ div.stText_Area > button:first-child {
 				This pie chart shows the distribution of all the sentiments towards 
 				climate change being man made or not.
 			""")
-	if menu_id == 'Home':
-		st.markdown("<h2 style='text-align: center;'>Climate Change Tweet Classifier</h2>",
-		 unsafe_allow_html=True)
-		st.image("resources/imgs/Advanced Classification 2022 EDSA.jpg" ,  width = 650 )
+	# if menu_id == 'Home':
+	# 	st.markdown("<h2 style='text-align: center;'>Climate Change Tweet Classifier</h2>",
+	# 	 unsafe_allow_html=True)
+	# 	st.image("resources/imgs/Advanced Classification 2022 EDSA.jpg" ,  width = 650 )
 	if menu_id == 'aboutUs':
 		st.image("resources/imgs/team.jpg")
 		st.markdown("<h2 style='text-align: center;'>Who are we?</h2>",
@@ -225,6 +203,10 @@ div.stText_Area > button:first-child {
 		st.write('- `2 News:` the tweet links to factual news about climate change')
 		st.write('- `0 Neutral:` the tweet neither supports nor refutes the belief of man-made climate change')
 		st.write('- `-1 Anti:` the tweet does not believe in man-made climate change')
+	if menu_id == 'Home':
+		st.markdown("<h2 style='text-align: center;'>Climate Change Tweet Classifier</h2>",
+		 unsafe_allow_html=True)
+		st.image("resources/imgs/Advanced Classification 2022 EDSA.jpg" ,  width = 650 )		
 
 		
 

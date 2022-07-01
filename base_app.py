@@ -46,8 +46,7 @@ raw = pd.read_csv("resources/train.csv")
 # The main function where we will build the actual app
 
 def main():
-	with hc.HyLoader('Loading..',hc.Loaders.pulse_bars,):
-		time.sleep(4)
+
 	prediction =[]
 	models= ['Logistic Regression', 'Random Forest', 'Support Vector', 'Ada Boost',
 			 'K-Neighbors']
@@ -59,10 +58,6 @@ def main():
 		{'id': 'info' , 'icon': "far fa-copy", 'label':"Info"},
 		{'id': 'aboutUs',  'icon': "far fa-address-book ", 'label':"About Us"},
        
-        # {'id':' Crazy return value 💀','icon': "💀", 'label':"Calendar"},
-    
-        # {'icon': "fas fa-tachometer-alt", 'label':"Dashboard",'ttip':"I'm the Dashboard tooltip!"}, #can add a tooltip message
-        # {'icon': "far fa-copy", 'label':"Right End"},
 ]
 	over_theme = {'txc_inactive': '#FFFFFF'}
 	menu_id = hc.nav_bar(menu_definition=menu_data,home_name='Home',override_theme=over_theme)
@@ -93,7 +88,7 @@ div.stText_Area > button:first-child {
 
 		if model_choice == 'Logistic Regression':
 			if st.button("Classify"):
-				with hc.HyLoader('Classifying with Logistic Regression',hc.Loaders.standard_loaders,index=[2,2]):
+				with hc.HyLoader(f'Classifying  with {model_choice}..',hc.Loaders.standard_loaders,index=[2,2]):
 					time.sleep(3)
 				# Transforming user input with vectorizer
 					vect_text = tweet_cv.transform([tweet_text]).toarray()
@@ -112,7 +107,7 @@ div.stText_Area > button:first-child {
 		if model_choice == 'Random Forest':
 			# Creating a text box for user input
 			if st.button("Classify"):
-				with hc.HyLoader('Classifying  with Random Forest..', hc.Loaders.standard_loaders,index=[2,2]):
+				with hc.HyLoader(f'Classifying  with {model_choice}..', hc.Loaders.standard_loaders,index=[2,2]):
 					time.sleep(3)
 				# Transforming user input with vectorizer
 				vect_text = tweet_cv.transform([tweet_text]).toarray()
